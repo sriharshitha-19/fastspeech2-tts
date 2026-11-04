@@ -18,9 +18,7 @@
 - Installed Montreal Forced Aligner 3.4.3 via micromamba (conda-forge) in a separate Python 3.11 environment instead of pip.
 
 ## 2026-11-04
-- Confirmed by searching MFA's downloadable acoustic and dictionary model lists that no Telugu model exists. Telugu alignment will use an aligner trained on our own Telugu data, with a grapheme-based dictionary.
-- English alignment uses the pretrained english_mfa acoustic model and english_india_mfa dictionary.
-- Colab sessions reset repeatedly (free-tier limits), wiping the temporary disk, so aligned data and archives are saved to Google Drive after each long step.
-- English alignment split after alignment: 3,037 train and 606 validation clips (4 clips excluded).
-- Telugu dictionary: one entry per unique word (13,291 words from 2,774 transcripts), each spelled as its Unicode characters (one character per phone). Transcripts were NFC-normalized and stripped of everything except Telugu letters and ASCII digits. No zero-width joiners were present in the data.
-“English alignment: 3,643 of 3,647 clips aligned; 4 failed and were excluded, leaving 3,037 train and 606 validation clips. Alignments saved to Google Drive.”
+- English alignment: 3,643 of 3,647 clips aligned; 4 failed and were excluded. Alignments saved to Google Drive.
+- Copied the reference FastSpeech2 code into English/ and Telugu/, leaving out the pretrained vocoder weights (.zip), demo files, images and the reference repo's preprocessed_data.
+- English/config.yaml: shortened training (total_step 30000 instead of 900000, warm_up_step 2000, anneal_steps 20000/25000/28000), validation every 500 steps for the loss plot, checkpoint every 1000 steps because Colab sessions drop.
+- First Telugu aligner run (default MFA training recipe, 2 CPU jobs) was stopped after about 90 minutes without producing alignments or a saved model; rerunning with a shorter monophone and triphone recipe.
