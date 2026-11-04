@@ -22,3 +22,5 @@
 - Confirmed by searching MFA's downloadable acoustic and dictionary model lists that no Telugu model exists. Telugu alignment will use an aligner trained on our own Telugu data, with a grapheme-based dictionary.
 - English alignment uses the pretrained english_mfa acoustic model and english_india_mfa dictionary.
 - Colab sessions reset repeatedly (free-tier limits), wiping the temporary disk, so aligned data and archives are saved to Google Drive after each long step.
+- English alignment split after alignment: 3,037 train and 606 validation clips (4 clips excluded).
+- Telugu dictionary: one entry per unique word (13,291 words from 2,774 transcripts), each spelled as its Unicode characters (one character per phone). Transcripts were NFC-normalized and stripped of everything except Telugu letters and ASCII digits. No zero-width joiners were present in the data.
