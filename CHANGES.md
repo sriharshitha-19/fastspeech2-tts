@@ -22,3 +22,7 @@
 - Copied the reference FastSpeech2 code into English/ and Telugu/, leaving out the pretrained vocoder weights (.zip), demo files, images and the reference repo's preprocessed_data.
 - English/config.yaml: shortened training (total_step 30000 instead of 900000, warm_up_step 2000, anneal_steps 20000/25000/28000), validation every 500 steps for the loss plot, checkpoint every 1000 steps because Colab sessions drop.
 - First Telugu aligner run (default MFA training recipe, 2 CPU jobs) was stopped after about 90 minutes without producing alignments or a saved model; rerunning with a shorter monophone and triphone recipe.
+
+## 2026-11-05
+
+- First English alignment (english_mfa acoustic model with english_india_mfa dictionary) produced IPA phone labels (for example ə, ɹ, ɪ), which do not match the ARPAbet symbols used by the reference FastSpeech 2 text frontend. English is being re-aligned with MFA's english_us_arpa acoustic model and dictionary.
