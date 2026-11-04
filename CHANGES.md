@@ -10,10 +10,15 @@
 - Gender 1 assumed to be a single male speaker: 8 clips checked (2 random, 6 at pitch extremes), all male. Automated pitch check was inconclusive.
 - Clips filtered to 2 to 15 s. Same split method (seed 42): 2,315 train clips (5.00 h), 459 validation clips (1.00 h).
 - Audio resampled from 48 kHz to 22.05 kHz.
+
 ## 2026-11-03 (continued)
 
 - Cloned the reference repo ming024/FastSpeech2 into the Colab environment.
-- The repo's requirements.txt pins old versions (torch 1.7.0, numpy 1.19.0, librosa 0.7.2, numba 0.48) that cannot be installed on Colab's Python 3.13. Installed current versions of the dependencies instead: torch 2.11.0, numpy 2.4.6, librosa 0.11.0. pyworld built successfully and all imports pass. GPU is available.
-- Because of the version changes, some reference code may need patching. Each patch will be logged here.
-- Checked the Montreal Forced Aligner pretrained models list: there is no Telugu acoustic model or dictionary. Telugu alignment will need an aligner trained on our own Telugu data, with a character-to-phoneme dictionary.
-- English has a pretrained MFA acoustic model and an India English dictionary, which will be used for the English alignment.
+- The repo's requirements.txt pins old library versions; installed current versions of the dependencies instead. Because of the version changes, some reference code may need patching. Each patch will be logged here.
+- Installed Montreal Forced Aligner 3.4.3 via micromamba (conda-forge) in a separate Python 3.11 environment instead of pip.
+
+## 2026-11-04
+
+- Confirmed by searching MFA's downloadable acoustic and dictionary model lists that no Telugu model exists. Telugu alignment will use an aligner trained on our own Telugu data, with a grapheme-based dictionary.
+- English alignment uses the pretrained english_mfa acoustic model and english_india_mfa dictionary.
+- Colab sessions reset repeatedly (free-tier limits), wiping the temporary disk, so aligned data and archives are saved to Google Drive after each long step.
