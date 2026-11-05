@@ -25,4 +25,6 @@
 
 ## 2026-11-05
 
-- First English alignment (english_mfa acoustic model with english_india_mfa dictionary) produced IPA phone labels (for example ə, ɹ, ɪ), which do not match the ARPAbet symbols used by the reference FastSpeech 2 text frontend. English is being re-aligned with MFA's english_us_arpa acoustic model and dictionary.
+- Telugu aligner trained from scratch with MFA on the 2,774 Telugu clips and the grapheme dictionary, using a shorter recipe (monophone and triphone stages). An earlier attempt with MFA's default recipe was stopped after about 90 minutes without output. Result: 2,773 of 2,774 clips aligned; the trained acoustic model and alignments are saved to Google Drive.
+- English re-aligned with MFA's english_us_arpa acoustic model and dictionary (ARPAbet phones, matching the reference text frontend): 3,638 of 3,647 clips aligned (3,032 train, 606 validation); 9 failed and were excluded.
+- MFA writes silence as an empty phone label, which the reference preprocessing does not treat as silence; the alignment-reading code will map it to "sp".
