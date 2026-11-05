@@ -1,29 +1,19 @@
-""" from https://github.com/keithito/tacotron """
+""" Symbol table for the Telugu model (character-level phones).
 
-"""
-Defines the set of symbols used in text input to the model.
-
-The default is a set of ASCII characters that works well for English or text that has been run through Unidecode. For other data, you can modify _characters. See TRAINING_DATA.md for details. """
-
-from text import cmudict, pinyin
+Adapted from the reference FastSpeech2 symbols.py: the English ARPAbet and
+pinyin symbols are replaced by the Telugu Unicode block (U+0C00-U+0C7F) and
+ASCII digits. Each Telugu character is one phone, matching the grapheme-based
+dictionary used to train the Telugu MFA aligner. """
 
 _pad = "_"
 _punctuation = "!'(),.:;? "
 _special = "-"
-_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 _silences = ["@sp", "@spn", "@sil"]
 
-# Prepend "@" to ARPAbet symbols to ensure uniqueness (some are the same as uppercase letters):
-_arpabet = ["@" + s for s in cmudict.valid_symbols]
-_pinyin = ["@" + s for s in pinyin.valid_symbols]
+# "@" prefix marks phone symbols, as in the reference code (text_to_sequence
+# turns everything inside {...} into "@<symbol>")
+_telugu = ["@" + chr(c) for c in range(0x0C00, 0x0C80)]
+_digits = ["@" + d for d in "0123456789"]
 
 # Export all symbols:
-symbols = (
-    [_pad]
-    + list(_special)
-    + list(_punctuation)
-    + list(_letters)
-    + _arpabet
-    + _pinyin
-    + _silences
-)
+symbols = [_pad] + list(_special) + list(_punctuation) + _telugu + _digits + _silences

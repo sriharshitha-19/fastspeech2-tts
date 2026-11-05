@@ -3,10 +3,10 @@ preprocess:
   path:
     corpus_path: "./raw_data/Svarah"
     lexicon_path: "lexicon/librispeech-lexicon.txt"
-    raw_path: "./raw_data/Svarah"
+    raw_path: "./raw_data/Svarah"          # contains train/<speaker>/ and val/<speaker>/
     preprocessed_path: "./preprocessed_data/Svarah"
   preprocessing:
-    val_size: 0   # we use our own train/val manifests instead of a random split
+    val_size: 0   # unused: train/val come from our own folders (raw_path/train, raw_path/val)
     text: {text_cleaners: ["english_cleaners"], language: "en"}
     audio: {sampling_rate: 22050, max_wav_value: 32768.0}
     stft: {filter_length: 1024, hop_length: 256, win_length: 1024}
@@ -32,7 +32,7 @@ model:
     energy_quantization: "linear"
     n_bins: 256
   multi_speaker: True      # changed: Svarah has many speakers
-  max_seq_len: 1000
+  max_seq_len: 1800        # changed: our clips reach 20 s = 1722 mel frames (reference uses 1000)
   vocoder: {model: "HiFi-GAN", speaker: "universal"}
 
 train:

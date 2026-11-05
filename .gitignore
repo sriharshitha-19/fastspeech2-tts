@@ -4,3 +4,5 @@ preprocessed_data/
 *.zip
 *.tar
 *.wav
+__pycache__/
+*.pyc

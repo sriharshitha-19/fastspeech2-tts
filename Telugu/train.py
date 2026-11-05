@@ -1,5 +1,8 @@
 import argparse
+import glob
 import os
+import sys
+import time
 
 import torch
 import yaml
@@ -16,6 +19,8 @@ from dataset import Dataset
 from evaluate import evaluate
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+KEEP_CHECKPOINTS = 3  # checkpoints include optimizer state (large), keep only the newest few
 
 
 def main(args, configs):
@@ -57,7 +62,27 @@ def main(args, configs):
     train_logger = SummaryWriter(train_log_path)
     val_logger = SummaryWriter(val_log_path)
 
+    def save_ckpt(step):
+        ckpt_dir = train_config["path"]["ckpt_path"]
+        torch.save(
+            {
+                "model": model.module.state_dict(),
+                "optimizer": optimizer._optimizer.state_dict(),
+            },
+            os.path.join(ckpt_dir, "{}.pth.tar".format(step)),
+        )
+        # delete old checkpoints, keep the newest KEEP_CHECKPOINTS
+        numbered = []
+        for p in glob.glob(os.path.join(ckpt_dir, "*.pth.tar")):
+            stem = os.path.basename(p).split(".")[0]
+            if stem.isdigit():
+                numbered.append((int(stem), p))
+        numbered.sort()
+        for _, old in numbered[:-KEEP_CHECKPOINTS]:
+            os.remove(old)
+
     # Training
+    start_time = time.time()
     step = args.restore_step + 1
     epoch = 1
     grad_acc_step = train_config["optimizer"]["grad_acc_step"]
@@ -149,19 +174,21 @@ def main(args, configs):
                     model.train()
 
                 if step % save_step == 0:
-                    torch.save(
-                        {
-                            "model": model.module.state_dict(),
-                            "optimizer": optimizer._optimizer.state_dict(),
-                        },
-                        os.path.join(
-                            train_config["path"]["ckpt_path"],
-                            "{}.pth.tar".format(step),
-                        ),
+                    save_ckpt(step)
+
+                # time budget: save a final checkpoint and stop cleanly
+                if (
+                    args.max_minutes is not None
+                    and (time.time() - start_time) / 60.0 > args.max_minutes
+                ):
+                    save_ckpt(step)
+                    outer_bar.write(
+                        "Time budget reached at step {}, checkpoint saved.".format(step)
                     )
+                    sys.exit(0)
 
                 if step == total_step:
-                    quit()
+                    sys.exit(0)
                 step += 1
                 outer_bar.update(1)
 
@@ -173,26 +200,22 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--restore_step", type=int, default=0)
     parser.add_argument(
-        "-p",
-        "--preprocess_config",
+        "-c",
+        "--config",
         type=str,
         required=True,
-        help="path to preprocess.yaml",
+        help="path to config.yaml (one file with sections: preprocess, model, train)",
     )
     parser.add_argument(
-        "-m", "--model_config", type=str, required=True, help="path to model.yaml"
-    )
-    parser.add_argument(
-        "-t", "--train_config", type=str, required=True, help="path to train.yaml"
+        "--max_minutes",
+        type=float,
+        default=None,
+        help="stop after this many minutes of training and save a checkpoint",
     )
     args = parser.parse_args()
 
     # Read Config
-    preprocess_config = yaml.load(
-        open(args.preprocess_config, "r"), Loader=yaml.FullLoader
-    )
-    model_config = yaml.load(open(args.model_config, "r"), Loader=yaml.FullLoader)
-    train_config = yaml.load(open(args.train_config, "r"), Loader=yaml.FullLoader)
-    configs = (preprocess_config, model_config, train_config)
+    config = yaml.load(open(args.config, "r"), Loader=yaml.FullLoader)
+    configs = (config["preprocess"], config["model"], config["train"])
 
     main(args, configs)
