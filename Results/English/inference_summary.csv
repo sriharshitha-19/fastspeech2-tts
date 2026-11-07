@@ -1,0 +1,6 @@
+id,text,n_symbols,audio_seconds,mean_symbol_ms,max_symbol_ms,f0_mean_hz,f0_min_hz,f0_max_hz,energy_mean,energy_max
+E1,The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.,85,5.94,69.9,290.2,239.9,193.5,269.4,27.145,58.989
+E2a,The orchestra's conduct during the ceremony was praised by the audience.,50,3.99,79.9,220.6,229.7,202.3,256.0,28.926,57.546
+E2b,The researchers will conduct an experiment to evaluate the proposed method.,56,3.89,69.5,139.3,227.9,193.4,258.3,22.422,49.639
+E3,The rhyth m of the orchestra changed unexpectedly.,37,2.89,78.1,197.4,234.9,172.1,283.2,26.848,60.593
+E4,"The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.",79,7.14,90.4,185.8,232.7,184.8,297.5,22.349,69.68

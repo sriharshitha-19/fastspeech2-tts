@@ -119,7 +119,7 @@ def pick_font():
         "DejaVu Sans",
     ]:
         if name in names:
-            matplotlib.rcParams["font.family"] = name
+            matplotlib.rcParams["font.family"] = ["DejaVu Sans",name]
             return name
     return None
 
